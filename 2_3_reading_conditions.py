@@ -108,7 +108,7 @@ def main():
 			    "director" : "Barry Wilson",
 			    "writers" : [
 			        "Paco paquito Paco",
-			        "Alberto Alerto"
+			        "Paco Ozores"
 			    ],
 			    "awards" : {
 			        "oscars" : [
@@ -132,13 +132,49 @@ def main():
 
 		collection.insert_many(myMovies)
 
+		print("BÚSQUEDA BASADA EN CONDICIONES DE 2 PROPIEDADES DE UN DOCUMENTO")
+		print("Películas lanzadas en el año 2000 y con rated=B")
 		# Hacemos una búsqueda basada en condiciones de 2 propiedades
 		cursor = collection.find({"year": 2000, "rated": "B"})
-
 		pp = pprint.PrettyPrinter(indent=4)
 
 		for movie in cursor:
 			pp.pprint(movie)
+
+		print("BÚSQUEDA EN DOCUMENTOS ANIDADOS DENTRO DE UN DOCUMENTO")
+		print("Películas que hayan sido nominadas 34 veces en diferentes premios")
+		# Buscamos películas basándonos en condiciones dentro de documentos anidados
+		# Buscamos las peículas que hayan sido nominadas 34 veces
+		cursor = collection.find({"awards.nominations": 34})
+		pp = pprint.PrettyPrinter(indent=4)
+
+		for movie in cursor:
+			pp.pprint(movie)
+
+		print("BÚSQUEDA EN ARRAYS DENTRO DE UN DOCUMENTO - CUALQUIER VALOR CONTENIDO EN EL ARRAY")
+		print("Películas que tengan como escritores a Paco Ozores")
+		# Búsqueda en arrays con un valor que esté dentro del array
+		# Buscamos las películas que tengan como escritores a "Paco Ozores"
+		cursor = collection.find({"writers": "Paco Ozores"})
+		pp = pprint.PrettyPrinter(indent=4)
+
+		for movie in cursor:
+			pp.pprint(movie)
+
+		print("BÚSQUEDA EN DOCUMENTOS ANIDADOS DENTRO DE UN DOCUMENTO \
+			- VALORES EXACTOS CONTENIDOS EN EL ARRAY EN EL ORDEN INDICADO")
+		print("Películas que hayan sido escritas sólo por 'Paco paquito Paco' y 'Paco Ozores', \
+			y que dichos escritores figuren en este orden en el array")
+		# Búsqueda en arrays que contengan sólo los elementos que queremos y ninguno más, y en el orden que le indiquemos
+		# Buscamos las películas que tengan como escritores SÓLO a "Paco paquito Paco" y "Paco Ozores", en este orden.
+		cursor = collection.find({"writers": ["Paco paquito Paco", "Paco Ozores"]})
+		# Si una películas tiene como valor writers:["Paco Ozores", "Paco paquito Paco"], este película no coincide con
+		# la búsqueda anterior, ya que el orden de los escritores no es el mismo que el buscado
+		pp = pprint.PrettyPrinter(indent=4)
+
+		for movie in cursor:
+			pp.pprint(movie)
+
 
 	except Exception as e:
 		print(e)
