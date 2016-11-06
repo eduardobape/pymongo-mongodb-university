@@ -19,9 +19,13 @@ def main():
 	# Si no queremos obtener un campo del documento, se indica con un 0 seguido del nombre del campo.
 	# El _id siempre se devuelve al usar el método find, por eso, lo hemos excluido usando "_id": 0
 
+	print("#" * 75 + " PROJECTION " + "#" * 75)
+
 	if movies:
 		for movie in movies:
 			print(movie)
+
+	print("\n"+ "/" * 140 + "\n")
 
 	movies = collection.find({"year": 1952}, {"awards": 0}) # Queremos todos los campos menos el campo awards
 	pp = pprint.PrettyPrinter(indent=4)
