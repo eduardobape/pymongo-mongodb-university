@@ -9,7 +9,7 @@ def main():
 	try:
 		connection = pymongo.MongoClient("localhost", 27017)
 		database = connection.video
-		collection = database.movies
+		collection = database.mymovies
 
 		collection.drop()
 
@@ -132,11 +132,12 @@ def main():
 
 		collection.insert_many(myMovies)
 
+		pp = pprint.PrettyPrinter(indent=4) # Imprimir por consola con indentaciones
+
 		print("BÚSQUEDA BASADA EN CONDICIONES DE 2 PROPIEDADES DE UN DOCUMENTO")
 		print("Películas lanzadas en el año 2000 y con rated=B")
 		# Hacemos una búsqueda basada en condiciones de 2 propiedades
 		cursor = collection.find({"year": 2000, "rated": "B"})
-		pp = pprint.PrettyPrinter(indent=4)
 
 		for movie in cursor:
 			pp.pprint(movie)
@@ -146,7 +147,6 @@ def main():
 		# Buscamos películas basándonos en condiciones dentro de documentos anidados
 		# Buscamos las peículas que hayan sido nominadas 34 veces
 		cursor = collection.find({"awards.nominations": 34})
-		pp = pprint.PrettyPrinter(indent=4)
 
 		for movie in cursor:
 			pp.pprint(movie)
@@ -156,8 +156,15 @@ def main():
 		# Búsqueda en arrays con un valor que esté dentro del array
 		# Buscamos las películas que tengan como escritores a "Paco Ozores"
 		cursor = collection.find({"writers": "Paco Ozores"})
-		pp = pprint.PrettyPrinter(indent=4)
 
+		for movie in cursor:
+			pp.pprint(movie)
+
+		print("BÚSQUEDA USANDO ÍNDICES EN ARRAYS")
+		print("Búsqueda usando índices en arrays")
+		# Buscamos una película cuyo actor principal sea Claudia Cardinale
+		# La búsqueda se realiza en el array "actors", comprobando el valor que ocupa el índice 0 en el array
+		cursor = database.movieDetails.find({"actors.0": "Claudia Cardinale"})
 		for movie in cursor:
 			pp.pprint(movie)
 
@@ -170,7 +177,6 @@ def main():
 		cursor = collection.find({"writers": ["Paco paquito Paco", "Paco Ozores"]})
 		# Si una películas tiene como valor writers:["Paco Ozores", "Paco paquito Paco"], este película no coincide con
 		# la búsqueda anterior, ya que el orden de los escritores no es el mismo que el buscado
-		pp = pprint.PrettyPrinter(indent=4)
 
 		for movie in cursor:
 			pp.pprint(movie)
